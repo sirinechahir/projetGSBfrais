@@ -20,11 +20,11 @@
             @foreach ($fiches as $frais)
                 <tr>
                     <td>{{ $frais->anneemois }}</td>
-                    <td></td>
+                    <td>  </td>
                     <td>{{ $frais->nbjustificatifs }}</td>
                     <td>{{ $frais->montantvalide }} €</td>
                     <td>{{ $frais->id_etat }}</td>
-                    <td><a href="">Modifier</a></td>
+                    <td><a href="{{url('/editerFrais/'.$frais->id_frais)}}">Modifier</a></td>
                 </tr>
             @endforeach
             </tbody>

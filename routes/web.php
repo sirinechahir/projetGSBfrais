@@ -23,5 +23,7 @@ Route::get('/ajouterFrais', [FraisController::class, 'addFrais']);
 
 Route::post('/validerFrais', [FraisController::class, 'validFrais']);
 
+Route::get('/editerFrais/{id}', [FraisController::class, 'editFrais']);
+
 
 
