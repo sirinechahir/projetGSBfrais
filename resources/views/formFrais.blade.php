@@ -16,17 +16,21 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-md-3">Titre</label>
+                <div class="col-md-6">
+                    <input type="text" name="titre" class="form-control" value="{{$frais->titre}}" required>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-md-3">Montant saisi</label>
                 <div class="col-md-6">
-                    <input type="number" name="total" class="form-control " min="0" step="0.01" value="" disabled>
+                    <input type="number" name="total" class="form-control " min="0" step="1" value="" disabled>
                 </div>
             </div>
 
             <div class="col-md-12 col-md-offset-3">
-                <a href=" " class="btn btn-info @if (!$frais->id_frais)disabled @endif">Frais hors forfait</a>
+                <a href="{{ url('/listerFraisHF/'.$frais->id_frais) }}" class="btn btn-info @if (!$frais->id_frais)disabled @endif">Frais hors forfait</a>
                 <a href=" " class="btn btn-info @if (!$frais->id_frais)disabled @endif">Frais au forfait</a>
-
-
             </div>
 
             <div class="form-group">
@@ -35,23 +39,28 @@
                     <input type="number" name="nbjustif" class="form-control" min="0" value="{{$frais->nbjustificatifs}}">
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="col-md-3">Montant validé</label>
                 <div class="col-md-6">
-                    <input type="number" name="valide" class="form-control" min="0" step="0.01" value="{{$frais->montantvalide}}">
+                    <input type="number" name="valide" class="form-control" min="0" step="1" value="{{$frais->montantvalide}}">
                 </div>
             </div>
+
+
             <div class="form-group">
                 <label class="col-md-3">Etat</label>
                 <div class="col-md-6">
-                    <select name="etat" class="form-control" required>
+                    <select name="etat" class="form-select" >
                         @foreach($etats as $etat)
-                            <option value="{{$etat->id_etat}}" @if ($frais->id_etat == $etat->id_etat) selected @endif>{{$etat->lib_etat}}</option>
+                            <option value="{{$etat->id_etat}}" @if ($frais->id_etat == $etat->id_etat) selected @endif>
+                                {{$etat->lib_etat}} </option>
                         @endforeach
                     </select>
                 </div>
             </div>
             <hr>
+
 
             <div class="form-group">
                 <div class="col-md-12 col-md-offset3">
@@ -61,6 +70,11 @@
                     <button type="button" class="btn btn-secondary" onclick="if (confirm('Annuler la saisie ?'))window.location='{{url('/')}}';">
                         Annuler
                     </button>
+                    @if($frais->id_frais)
+                        <a href="{{url('/supprimerFrais/'.$frais->id_frais)}}" id="suppr" class="btn btn-danger"  onclick="return confirm('Supprimer cette fiche de frais ?')" >
+                            Supprimer
+                        </a>
+                    @endif
                 </div>
             </div>
 

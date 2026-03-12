@@ -4,19 +4,23 @@ namespace App\Service;
 
 use App\Exceptions\UserException;
 use App\Models\Frais;
+use App\Models\FraisHorsForfait;
 use Illuminate\Database\QueryException;
+
+
 use App\Models\Etat;
 use function Laravel\Prompts\select;
 
-class FraisService
+class FraisHFService
 {
-    public function getListFrais($id_visiteur)
+    public function getListFraisHF($id)
     {
         try {
-            $liste = Frais::query()
-                ->select('frais.*', 'etat.lib_etat')
-                ->join('etat', 'etat.id_etat', '=', 'frais.id_etat')
-                ->where('id_visiteur', '=', $id_visiteur)
+            $liste = FraisHorsForfait::query()
+                ->select('fraishorsforfait.*', 'frais.id_frais')
+                ->join('frais', 'fraishorsforfait.id_frais', '=', 'frais.id_frais')
+                ->where('frais.id_frais', '=', $id)
+                ->orderBy('date_fraishorsforfait', 'asc')
                 ->get();
 
             //$liste=Frais::query()->where('id_visiteur','=', $id_visiteur)->get();
@@ -27,51 +31,38 @@ class FraisService
         return $liste;
     }
 
-    public function saveFrais($frais)
+    public function getTotalHF($id)
     {
-        $frais->save();
         try {
-            $frais = Frais::query()->find($frais);
+            $total = FraisHorsForfait::query()->where('id_frais', '=', $id)->sum('montant_fraishorsforfait');
         } catch (QueryException $exception) {
             $userMessage = "Impossible d'accéder à la base de donnée";
             throw new UserException($userMessage, $exception->getMessage(), $exception->getCode());
         }
-        return $frais;
+        return $total;
     }
 
-    public function getFrais($id)
+    public function saveFraisHF(FraisHorsForfait $fraisHF)
+    {
+        $fraisHF->save();
+        try {
+            $fraisHF = FraisHorsForfait::query()->find($fraisHF);
+        } catch (QueryException $exception) {
+            $userMessage = "Impossible d'accéder à la base de donnée";
+            throw new UserException($userMessage, $exception->getMessage(), $exception->getCode());
+        }
+        return $fraisHF;
+    }
+
+    public function getFraisHF($idHF)
     {
         try {
-            $frais = Frais::query()->find($id);
+            $fraisHF = Frais::query()->find($idHF);
         } catch (QueryException $exception) {
             $userMessage = "Impossible de lire la base de donnée";
             throw new UserException($userMessage, $exception->getMessage(), $exception->getCode());
         }
 
-        return $frais;
-    }
-
-
-    public function getListEtats()
-    {
-        return Etat::query()->get();
-    }
-
-
-    public function deleteFrais($id)
-    {
-        try {
-            $frais = Frais::query()->find($id);
-            $frais->delete();
-        } catch (QueryException $exception) {
-            if ($exception->getCode() == 23000) {
-                $userMessage = "Impossible de supprimer une fiche avec des frais saisis";
-            } else {
-                $userMessage = "Erreur de suppression dans la base de donnée";
-            }
-            throw new UserException($userMessage, $exception->getMessage(), $exception->getCode());
-        }
-
-
+        return $fraisHF;
     }
 }

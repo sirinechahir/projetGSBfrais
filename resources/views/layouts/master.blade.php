@@ -25,10 +25,16 @@
                 @if(session('id_visiteur'))
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/listerFrais') }}">Lister</a>
+                        <a class="nav-link" href="{{ url('/listerFrais') }}">Lister Frais</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/ajouterFrais') }}">Ajouter</a>
+                        <a class="nav-link" href="{{ url('/ajouterFrais') }}">Ajouter Frais</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/listerMedicament') }}">Lister Medicament</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/rechercherMedoc') }}">Rechercher médicaments</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">

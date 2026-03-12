@@ -9,6 +9,8 @@
             <thead class="table-light">
             <tr>
                 <th>Mois</th>
+                <th>Titre</th>
+                <th>Modification</th>
                 <th>Montant saisi</th>
                 <th>Nb justificatifs</th>
                 <th>Montant validé</th>
@@ -20,6 +22,8 @@
             @foreach ($fiches as $frais)
                 <tr>
                     <td>{{ $frais->anneemois }}</td>
+                    <td>{{$frais->titre}}</td>
+                    <td>{{$frais->datemodification}}</td>
                     <td>  </td>
                     <td>{{ $frais->nbjustificatifs }}</td>
                     <td>{{ $frais->montantvalide }} €</td>
