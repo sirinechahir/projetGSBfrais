@@ -37,6 +37,11 @@ Route::get('/rechercherMedoc', [MedicamentController::class, 'searchMed']);//->n
 Route::post('/validerMedicament', [MedicamentController::class, 'validMedicament'])->name('validerMedicament');
 
 Route::get('/listerFormulation/{id}', [MedicamentController::class, 'listForm'])->name('listerFormulation');
+Route::get('/ajouterFormulation/{id}', [MedicamentController::class, 'addForm'])->name('ajouterFormulation');
+Route::post('/validerFormulation', [MedicamentController::class, 'validForm'])->name('validerFormulation');
+Route::get('/editerFormulation/{id_medicament}/{id_presentation}', [MedicamentController::class, 'editForm'])->name('modifierFormulation');
+Route::get('/supprimerFormulation/{id_medicament}/{id_presentation}', [MedicamentController::class, 'removeForm'])->name('supprimerFormulation');
+
 
 
 
