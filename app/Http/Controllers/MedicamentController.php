@@ -144,6 +144,60 @@ class MedicamentController
         }
     }
 
+    //react API
+
+    public function apiListMed()
+    {
+        try {
+            $service = new MedicamentService();
+            $fiches = $service->getListMedicament();
+            return response()->json($fiches);
+        } catch (UserException $e) {
+            return response()->json(['error' => $e->getUserMessage()], 500);
+        }
+    }
+
+    public function apiSearchMed(Request $request)
+    {
+        try {
+            $service = new MedicamentService();
+            $recherche = $request->input('recherche', '');
+            $fiches = $service->getMedicamentParNomFamille($recherche);
+            return response()->json($fiches);
+        } catch (UserException $e) {
+            return response()->json(['error' => $e->getUserMessage()], 500);
+        }
+    }
+
+    public function apiListForm($id) {
+        $service = new MedicamentService();
+        $fiches = $service->getListFormulation($id);
+        $med = $service->getMedicament($id);
+        return response()->json(['fiches' => $fiches, 'medicament' => $med]);
+    }
+
+    public function apiSaveForm(Request $request) {
+        try {
+            $service = new MedicamentService();
+            $service->saveForm($request); // Votre service gère déjà le save/update
+            return response()->json(['message' => 'Succès']);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function apiDeleteForm($id_med, $id_pres) {
+        try {
+            $service = new MedicamentService();
+            $service->deleteForm($id_med, $id_pres);
+            return response()->json(['message' => 'Supprimé']);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Erreur de suppression'], 500);
+        }
+    }
+
+
+
 
 
 
