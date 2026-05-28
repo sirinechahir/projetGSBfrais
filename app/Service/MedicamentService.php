@@ -116,23 +116,6 @@ class MedicamentService
 
 
 
-
-//    public function saveForm($form)
-//    {
-//        try {
-//            return Formuler::insert([
-//                'id_medicament'   => $form->id_medicament,
-//                'id_presentation' => $form->id_presentation,
-//                'qte_formuler'    => $form->qte_formuler,
-//            ]);
-////            $form->save();
-////            return $form;
-//        } catch (QueryException $exception) {
-//            $userMessage = "Erreur lors de l'accès à la base de données";
-//            throw new UserException($userMessage, $exception->getMessage(), $exception->getCode());
-//        }
-//    }
-
     public function saveForm($request)
     {
         try {
@@ -150,6 +133,21 @@ class MedicamentService
                         'qte_formuler'    => $qte,
                     ]);
             } else {
+                // AJOUT DU CODE ICI : On vérifie si le doublon existe déjà avant d'insérer
+                $existeDeja = Formuler::where('id_medicament', $id_med)
+                    ->where('id_presentation', $id_pres_nouveau)
+                    ->exists();
+
+                if ($existeDeja) {
+                    // Si ça existe, on arrête tout et on envoie le message d'erreur
+                    throw new UserException(
+                        "Cette présentation est déjà associée à ce médicament.",
+                        "Duplicate entry detected",
+                        23000
+                    );
+                }
+
+                // Si ça n'existe pas, l'insertion se fait normalement sans planter
                 return Formuler::insert([
                     'id_medicament'   => $id_med,
                     'id_presentation' => $id_pres_nouveau,
