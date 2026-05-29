@@ -115,7 +115,6 @@ class MedicamentService
     }
 
 
-
     public function saveForm($request)
     {
         try {
@@ -126,28 +125,46 @@ class MedicamentService
             $id_pres_ancien = $request->input('id_presentation_old');
 
             if ($id_pres_ancien) {
+                // --- BLOC MODIFICATION ---
+
+                // Si l'utilisateur change de présentation (ex: il passe de 5 à 6)
+                if ($id_pres_ancien != $id_pres_nouveau) {
+                    // On vérifie si la nouvelle présentation (le 6) existe déjà pour ce médicament
+                    $existeDeja = Formuler::where('id_medicament', $id_med)
+                        ->where('id_presentation', $id_pres_nouveau)
+                        ->exists();
+
+                    if ($existeDeja) {
+                        throw new UserException(
+                            "Impossible de modifier : cette présentation est déjà associée à ce médicament.",
+                            "Duplicate entry detected on update",
+                            23000
+                        );
+                    }
+                }
+
+                // Si ce n'est pas un doublon (ou s'il modifie juste la quantité sans changer d'ID), on met à jour
                 return Formuler::where('id_medicament', $id_med)
                     ->where('id_presentation', $id_pres_ancien)
                     ->update([
                         'id_presentation' => $id_pres_nouveau,
                         'qte_formuler'    => $qte,
                     ]);
+
             } else {
-                // AJOUT DU CODE ICI : On vérifie si le doublon existe déjà avant d'insérer
+                // --- BLOC AJOUT ---
                 $existeDeja = Formuler::where('id_medicament', $id_med)
                     ->where('id_presentation', $id_pres_nouveau)
                     ->exists();
 
                 if ($existeDeja) {
-                    // Si ça existe, on arrête tout et on envoie le message d'erreur
                     throw new UserException(
                         "Cette présentation est déjà associée à ce médicament.",
-                        "Duplicate entry detected",
+                        "Duplicate entry detected on insert",
                         23000
                     );
                 }
 
-                // Si ça n'existe pas, l'insertion se fait normalement sans planter
                 return Formuler::insert([
                     'id_medicament'   => $id_med,
                     'id_presentation' => $id_pres_nouveau,
