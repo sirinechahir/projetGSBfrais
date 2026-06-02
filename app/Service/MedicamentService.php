@@ -38,16 +38,20 @@ class MedicamentService
     public function getMedicamentParNomFamille($recherche)
     {
         try {
-            $recherche = Medicament::query()
-                ->select('depot_legal', 'nom_commercial', 'effets', 'contre_indication', 'prix_echantillon', 'famille.lib_famille', 'formuler.qte_formuler',
-                'presentation.lib_presentation')
+            $resultats = Medicament::query()
+                ->select('medicament.id_medicament', 'depot_legal', 'nom_commercial', 'effets',
+                    'contre_indication', 'prix_echantillon', 'famille.lib_famille',
+                    'formuler.qte_formuler', 'presentation.lib_presentation')
                 ->join('famille', 'medicament.id_famille', '=', 'famille.id_famille')
                 ->join('formuler', 'formuler.id_medicament', '=', 'medicament.id_medicament')
-                ->join('presentation',  'formuler.id_presentation', '=', 'presentation.id_presentation')
-                ->where('famille.lib_famille', 'like', '%' . $recherche . '%')
-                ->orwhere('medicament.nom_commercial', 'like', '%' . $recherche . '%')
+                ->join('presentation', 'formuler.id_presentation', '=', 'presentation.id_presentation')
+                ->where(function($query) use ($recherche) {          // ← groupement
+                    $query->where('famille.lib_famille', 'like', '%' . $recherche . '%')
+                        ->orWhere('medicament.nom_commercial', 'like', '%' . $recherche . '%');
+                })
+                ->distinct()
                 ->get();
-            return $recherche;
+            return $resultats;
         } catch (QueryException $exception) {
             $userMessage = "Impossible d'accéder à la base de données.";
             throw new UserException($userMessage, $exception->getMessage(), $exception->getCode());
